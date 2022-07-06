@@ -1,0 +1,39 @@
+{
+  "project_info": {
+    "project_number": "464200970587",
+    "project_id": "android-summer-internship-2022",
+    "storage_bucket": "android-summer-internship-2022.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:464200970587:android:0b210b749b755a98f46a7e",
+        "android_client_info": {
+          "package_name": "com.summer.internship.tvtracker"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "464200970587-8mihoc8ar5i99k91ngj10j8muk4k991i.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyC_gsFPp0EK04m4mrEsAkiGaBuud1zay5A"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "464200970587-8mihoc8ar5i99k91ngj10j8muk4k991i.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
