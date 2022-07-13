@@ -1,9 +1,14 @@
-package com.summer.internship.tvtracker
+package com.summer.internship.tvtracker.Splash
 
+import android.annotation.SuppressLint
 import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.os.Handler
+import com.summer.internship.tvtracker.Login.LoginActivity
+import com.summer.internship.tvtracker.R
+
+@SuppressLint("CustomSplashScreen")
 @Suppress("DEPRECATION")
 class SplashActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
