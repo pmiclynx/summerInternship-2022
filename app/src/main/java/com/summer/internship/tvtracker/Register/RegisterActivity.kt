@@ -16,16 +16,16 @@ class RegisterActivity : AppCompatActivity() {
         setContentView(binding.root)
         binding.buttonRegister.setOnClickListener {
             if (binding.editTextEmail.text.isEmpty() || binding.editTextPassword.text.isEmpty() || binding.editTextName.text.isEmpty() || binding.editTextVerifyPassword.text.isEmpty()) {
-                Toast.makeText(this, "Nu ati completat toate campurile", Toast.LENGTH_SHORT)
+                Toast.makeText(this, "All fields must be filled", Toast.LENGTH_SHORT)
                     .show()
                 return@setOnClickListener
             }
             val pass: String = binding.editTextPassword.text.toString()
-            val ver: String = binding.editTextVerifyPassword.text.toString()
-            if (!pass.equals(ver)) {
+            val verifyPass: String = binding.editTextVerifyPassword.text.toString()
+            if (!pass.equals(verifyPass)) {
                 Toast.makeText(
                     this,
-                    "Parolele nu corespund ${binding.editTextPassword.text} ${binding.editTextVerifyPassword.text}",
+                    "Passwords doesn't match",
                     Toast.LENGTH_SHORT
                 )
                     .show()
@@ -34,7 +34,7 @@ class RegisterActivity : AppCompatActivity() {
             if (!Patterns.EMAIL_ADDRESS.matcher(binding.editTextEmail.getText().toString())
                     .matches()
             ) {
-                Toast.makeText(this, "email invalid", Toast.LENGTH_SHORT)
+                Toast.makeText(this, "invalid email", Toast.LENGTH_SHORT)
                     .show()
                 return@setOnClickListener
             }

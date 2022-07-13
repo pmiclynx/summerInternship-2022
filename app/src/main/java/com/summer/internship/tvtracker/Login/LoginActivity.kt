@@ -18,13 +18,13 @@ class LoginActivity : AppCompatActivity() {
 
         binding.buttonLogin.setOnClickListener {
             if(binding.editTextEmail.text.isEmpty() || binding.editTextPassword.text.isEmpty()) {
-                Toast.makeText(this, "Nu ati introdus email sau parola",Toast.LENGTH_SHORT)
+                Toast.makeText(this, "Email or password not entered",Toast.LENGTH_SHORT)
                     .show()
                 return@setOnClickListener
             }
             if(!Patterns.EMAIL_ADDRESS.matcher(binding.editTextEmail.getText().toString()).matches())
             {
-                Toast.makeText(this, "email invalid",Toast.LENGTH_SHORT)
+                Toast.makeText(this, "invalid email",Toast.LENGTH_SHORT)
                     .show()
                 return@setOnClickListener
             }
