@@ -14,16 +14,16 @@
         android:theme="@style/Theme.SummerInternship2022TvTracker"
         tools:targetApi="31">
         <activity
-            android:name=".Register.RegisterActivity"
+            android:name=".register.RegisterActivity"
             android:exported="false" />
         <activity
-            android:name=".Login.LoginActivity"
+            android:name=".login.LoginActivity"
             android:exported="false" />
         <activity
             android:name=".MainActivity"
             android:exported="false" />
         <activity
-            android:name=".Splash.SplashActivity"
+            android:name=".splash.SplashActivity"
             android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />

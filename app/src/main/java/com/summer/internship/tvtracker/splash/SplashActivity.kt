@@ -1,4 +1,4 @@
-package com.summer.internship.tvtracker.Splash
+package com.summer.internship.tvtracker.splash
 
 import android.annotation.SuppressLint
 import android.content.Intent
@@ -7,9 +7,9 @@ import android.os.Bundle
 import com.google.firebase.auth.ktx.auth
 import com.google.firebase.ktx.Firebase
 import android.os.Handler
-import com.summer.internship.tvtracker.Login.LoginActivity
 import com.summer.internship.tvtracker.MainActivity
 import com.summer.internship.tvtracker.R
+import com.summer.internship.tvtracker.login.LoginActivity
 
 @SuppressLint("CustomSplashScreen")
 @Suppress("DEPRECATION")
