@@ -1,4 +1,4 @@
-package com.summer.internship.tvtracker.Register
+package com.summer.internship.tvtracker.register
 
 import android.content.Intent
 import android.os.Bundle
