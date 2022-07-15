@@ -5,10 +5,10 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@drawable/netflixbackk"
-    tools:context=".Login.LoginActivity">
+    tools:context=".login.LoginActivity">
 
     <View
-        android:id="@+id/ViewGradient"
+        android:id="@+id/viewGradient"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:background="@drawable/gradient"

@@ -4,10 +4,10 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".Splash.SplashActivity">
+    tools:context=".splash.SplashActivity">
 
     <ImageView
-        android:id="@+id/SplashScreenImage"
+        android:id="@+id/splashScreenImage"
         android:layout_width="300dp"
         android:layout_height="200dp"
         android:src="@drawable/ic_netflix_1_logo"

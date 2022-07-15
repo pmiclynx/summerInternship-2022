@@ -1,11 +1,11 @@
-package com.summer.internship.tvtracker.Splash
+package com.summer.internship.tvtracker.splash
 
 import android.annotation.SuppressLint
 import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.os.Handler
-import com.summer.internship.tvtracker.Login.LoginActivity
+import com.summer.internship.tvtracker.login.LoginActivity
 import com.summer.internship.tvtracker.R
 
 @SuppressLint("CustomSplashScreen")

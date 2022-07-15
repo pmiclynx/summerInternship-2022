@@ -1,4 +1,4 @@
-package com.summer.internship.tvtracker.Login
+package com.summer.internship.tvtracker.login
 
 import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
@@ -6,7 +6,7 @@ import android.os.Bundle
 import android.util.Patterns
 import android.widget.Toast
 import com.summer.internship.tvtracker.MainActivity
-import com.summer.internship.tvtracker.Register.RegisterActivity
+import com.summer.internship.tvtracker.register.RegisterActivity
 import com.summer.internship.tvtracker.databinding.ActivityLoginBinding
 
 class LoginActivity : AppCompatActivity() {
