@@ -7,33 +7,29 @@ import android.text.TextUtils
 import android.util.Log
 import android.util.Patterns
 import android.widget.Toast
-import androidx.core.os.bundleOf
-import androidx.navigation.Navigation.findNavController
 import com.google.firebase.auth.FirebaseAuth
-import com.google.firebase.auth.FirebaseAuthMultiFactorException
 import com.google.firebase.auth.ktx.auth
 import com.google.firebase.ktx.Firebase
 import com.summer.internship.tvtracker.MainActivity
-import com.summer.internship.tvtracker.R
 import com.summer.internship.tvtracker.Register.RegisterActivity
 import com.summer.internship.tvtracker.databinding.ActivityLoginBinding
 
 class LoginActivity : AppCompatActivity() {
     private lateinit var binding: ActivityLoginBinding
-    private lateinit var auth: FirebaseAuth
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = ActivityLoginBinding.inflate(layoutInflater)
         setContentView(binding.root)
         binding.buttonLogin.setOnClickListener {
-            if(binding.editTextEmail.text.isEmpty() || binding.editTextPassword.text.isEmpty()) {
-                Toast.makeText(this, "Email or password not entered",Toast.LENGTH_SHORT)
+            if (binding.editTextEmail.text.isEmpty() || binding.editTextPassword.text.isEmpty()) {
+                Toast.makeText(this, "Email or password not entered", Toast.LENGTH_SHORT)
                     .show()
                 return@setOnClickListener
             }
-            if(!Patterns.EMAIL_ADDRESS.matcher(binding.editTextEmail.getText().toString()).matches())
-            {
-                Toast.makeText(this, "invalid email",Toast.LENGTH_SHORT)
+            if (!Patterns.EMAIL_ADDRESS.matcher(binding.editTextEmail.getText().toString())
+                    .matches()
+            ) {
+                Toast.makeText(this, "invalid email", Toast.LENGTH_SHORT)
                     .show()
                 return@setOnClickListener
             }
@@ -43,7 +39,6 @@ class LoginActivity : AppCompatActivity() {
             val intent = Intent(this, RegisterActivity::class.java)
             startActivity(intent)
         }
-        auth = Firebase.auth
     }
 
     private fun signIn(email: String, password: String) {
@@ -51,20 +46,21 @@ class LoginActivity : AppCompatActivity() {
         if (!validateForm()) {
             return
         }
-        auth.signInWithEmailAndPassword(email, password)
+        Firebase.auth.signInWithEmailAndPassword(email, password)
             .addOnCompleteListener { task ->
                 if (task.isSuccessful) {
                     // Sign in success, update UI with the signed-in user's information
                     Log.d(TAG, "signInWithEmail:success")
-                    val user = auth.currentUser
                     val intent = Intent(this, MainActivity::class.java)
                     startActivity(intent)
                     finish()
                 } else {
                     // If sign in fails, display a message to the user.
                     Log.w(TAG, "signInWithEmail:failure", task.exception)
-                    Toast.makeText(this, "Authentication failed.",
-                        Toast.LENGTH_SHORT).show()
+                    Toast.makeText(
+                        this, "Authentication failed.",
+                        Toast.LENGTH_SHORT
+                    ).show()
                 }
             }
     }

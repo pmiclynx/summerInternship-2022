@@ -15,7 +15,6 @@ import com.summer.internship.tvtracker.databinding.ActivityRegisterBinding
 
 class RegisterActivity : AppCompatActivity() {
     private lateinit var binding: ActivityRegisterBinding
-    private lateinit var auth: FirebaseAuth
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = ActivityRegisterBinding.inflate(layoutInflater)
@@ -44,13 +43,15 @@ class RegisterActivity : AppCompatActivity() {
                     .show()
                 return@setOnClickListener
             }
-            if(pass.length<6) {
+            if (pass.length < 6) {
                 Toast.makeText(this, "Password must be at least 6 characters", Toast.LENGTH_SHORT)
                     .show()
                 return@setOnClickListener
             }
-            auth = Firebase.auth
-            createAccount(binding.editTextEmail.text.toString(), binding.editTextPassword.text.toString())
+            createAccount(
+                binding.editTextEmail.text.toString(),
+                binding.editTextPassword.text.toString()
+            )
         }
     }
 
@@ -60,12 +61,11 @@ class RegisterActivity : AppCompatActivity() {
             return
         }
 
-        auth.createUserWithEmailAndPassword(email, password)
+        Firebase.auth.createUserWithEmailAndPassword(email, password)
             .addOnCompleteListener { task ->
                 if (task.isSuccessful) {
                     // Sign in success, update UI with the signed-in user's information
                     Log.d(TAG, "createUserWithEmail:success")
-                    val user = auth.currentUser
                     val intent = Intent(this, MainActivity::class.java)
                     intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK)
                     startActivity(intent)
@@ -73,8 +73,10 @@ class RegisterActivity : AppCompatActivity() {
                 } else {
                     // If sign in fails, display a message to the user.
                     Log.w(TAG, "createUserWithEmail:failure", task.exception)
-                    Toast.makeText(this, "Authentication failed.",
-                        Toast.LENGTH_SHORT).show()
+                    Toast.makeText(
+                        this, "Authentication failed.",
+                        Toast.LENGTH_SHORT
+                    ).show()
                 }
             }
     }
@@ -103,6 +105,5 @@ class RegisterActivity : AppCompatActivity() {
 
     companion object {
         private const val TAG = "EmailPassword"
-        private const val RC_MULTI_FACTOR = 9005
     }
 }
