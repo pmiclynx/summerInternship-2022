@@ -7,8 +7,8 @@ import android.view.View
 import android.view.ViewGroup
 import com.summer.internship.tvtracker.databinding.FragmentTopRatedBinding
 
-private lateinit var binding: FragmentTopRatedBinding
 class TopRatedFragment : Fragment() {
+    private lateinit var binding: FragmentTopRatedBinding
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View {
         binding = FragmentTopRatedBinding.inflate(inflater, container, false)
         return binding.root
