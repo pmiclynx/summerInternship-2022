@@ -12,7 +12,7 @@ import com.bumptech.glide.Glide
 import com.summer.internship.tvtracker.databinding.ItemMovieBinding
 
 class MoviesAdapter(
-    private val movies: ArrayList<Movie>,
+    private val movies: List<Movie>,
     private val clickListener: (String) -> Unit
 ) : RecyclerView.Adapter<MoviesAdapter.ViewHolder>() {
 
@@ -31,7 +31,7 @@ class MoviesAdapter(
             binding.textViewMovieTitle.text = movie.title
             loadImage(
                 binding.root,
-                "https://lh6.ggpht.com/9SZhHdv4URtBzRmXpnWxZcYhkgTQurFuuQ8OR7WZ3R7fyTmha77dYkVvcuqMu3DLvMQ=w300",
+                "https://image.tmdb.org/t/p/w500"+movie.url,
                 binding.imageViewMovie
             )
 
