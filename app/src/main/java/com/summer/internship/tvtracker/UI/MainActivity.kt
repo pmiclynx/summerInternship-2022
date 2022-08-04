@@ -1,10 +1,11 @@
-package com.summer.internship.tvtracker
+package com.summer.internship.tvtracker.UI
 
-import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import androidx.appcompat.app.AppCompatActivity
 import androidx.navigation.NavController
 import androidx.navigation.fragment.NavHostFragment
 import androidx.navigation.ui.NavigationUI.setupWithNavController
+import com.summer.internship.tvtracker.R
 import com.summer.internship.tvtracker.databinding.ActivityMainBinding
 
 

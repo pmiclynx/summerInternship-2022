@@ -1,4 +1,4 @@
-package com.summer.internship.tvtracker
+package com.summer.internship.tvtracker.Domain
 
 import com.google.gson.annotations.SerializedName
 

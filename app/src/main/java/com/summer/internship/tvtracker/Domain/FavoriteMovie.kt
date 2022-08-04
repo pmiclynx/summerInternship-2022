@@ -1,4 +1,4 @@
-package com.summer.internship.tvtracker
+package com.summer.internship.tvtracker.Domain
 
 import java.time.Instant
 import java.time.ZoneOffset
@@ -11,10 +11,14 @@ class FavoriteMovie(val title: String, val url: String, val data: String) {
         fun createMovieList(numMovies: Int): ArrayList<FavoriteMovie> {
             val movies = ArrayList<FavoriteMovie>()
             for (i in 1..numMovies) {
-                movies.add(FavoriteMovie("Title " + ++lastMovieId, "vedem", DateTimeFormatter
-                    .ofPattern("yyyy-MM-dd")
-                    .withZone(ZoneOffset.UTC)
-                    .format(Instant.now())))
+                movies.add(
+                    FavoriteMovie(
+                        "Title " + ++lastMovieId, "vedem", DateTimeFormatter
+                            .ofPattern("yyyy-MM-dd")
+                            .withZone(ZoneOffset.UTC)
+                            .format(Instant.now())
+                    )
+                )
             }
             return movies
         }

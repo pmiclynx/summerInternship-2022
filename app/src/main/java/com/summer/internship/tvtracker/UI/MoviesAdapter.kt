@@ -1,14 +1,13 @@
-package com.summer.internship.tvtracker
+package com.summer.internship.tvtracker.UI
 
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.ExpandableListView
 import android.widget.ImageView
-import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import androidx.viewbinding.ViewBinding
 import com.bumptech.glide.Glide
+import com.summer.internship.tvtracker.Domain.Movie
 import com.summer.internship.tvtracker.databinding.ItemMovieBinding
 
 class MoviesAdapter(
@@ -31,7 +30,7 @@ class MoviesAdapter(
             binding.textViewMovieTitle.text = movie.title
             loadImage(
                 binding.root,
-                "https://image.tmdb.org/t/p/w500"+movie.url,
+                "https://image.tmdb.org/t/p/w500" + movie.url,
                 binding.imageViewMovie
             )
 
@@ -42,13 +41,13 @@ class MoviesAdapter(
     }
 
 
-    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): MoviesAdapter.ViewHolder {
+    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
         return ViewHolder(
             ItemMovieBinding.inflate(LayoutInflater.from(parent.context), parent, false)
         )
     }
 
-    override fun onBindViewHolder(viewHolder: MoviesAdapter.ViewHolder, position: Int) {
+    override fun onBindViewHolder(viewHolder: ViewHolder, position: Int) {
         val movie: Movie = movies[position]
         viewHolder.bind(movie, clickListener)
     }
