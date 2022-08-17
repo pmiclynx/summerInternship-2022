@@ -4,8 +4,14 @@
     <option name="filePathToZoomLevelMap">
       <map>
         <entry key="..\:/Lynx/SummerPractice2022/summerInternship-2022/app/src/main/res/layout/activity_main.xml" value="0.21784420289855072" />
+        <entry key="..\:/proiect/summerInternship-2022/app/src/main/res/layout/activity_details_screen.xml" value="0.2085222121486854" />
+        <entry key="..\:/proiect/summerInternship-2022/app/src/main/res/layout/activity_login.xml" value="0.2085222121486854" />
+        <entry key="..\:/proiect/summerInternship-2022/app/src/main/res/layout/activity_main.xml" value="0.20863616930312098" />
+        <entry key="..\:/proiect/summerInternship-2022/app/src/main/res/layout/activity_register.xml" value="0.20863616930312098" />
+        <entry key="..\:/proiect/summerInternship-2022/app/src/main/res/layout/activity_splash.xml" value="0.20863616930312098" />
+        <entry key="..\:/proiect/summerInternship-2022/app/src/main/res/layout/fragment_popular.xml" value="0.20863616930312098" />
         <entry key="..\:/proiect/summerInternship-2022/app/src/main/res/layout/item_favorite_movie.xml" value="0.10196406184705391" />
-        <entry key="..\:/proiect/summerInternship-2022/app/src/main/res/layout/item_movie.xml" value="0.16" />
+        <entry key="..\:/proiect/summerInternship-2022/app/src/main/res/layout/item_movie.xml" value="0.2" />
       </map>
     </option>
   </component>
