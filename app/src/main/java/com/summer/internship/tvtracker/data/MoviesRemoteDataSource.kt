@@ -57,7 +57,7 @@ object MoviesRemoteDataSource : MoviesDataSource {
                 val url = it.backdropPath
                 val posterUrl = it.posterPath
                 it.backdropPath = "https://image.tmdb.org/t/p/w780${url}"
-                it.posterPath = "https://image.tmdb.org/t/p/w342${posterUrl}"
+                it.posterPath = "https://image.tmdb.org/t/p/w500${posterUrl}"
                 detailsResponseListener.onDetailsReceived(it)
             },
             onError = {

@@ -6,7 +6,7 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.LinearLayoutManager
-import com.summer.internship.tvtracker.ui.TheMovieDbGlideImageLoader
+import com.summer.internship.tvtracker.ui.GlideImageLoader
 import com.summer.internship.tvtracker.domain.FavoriteMovie
 import com.summer.internship.tvtracker.ui.FavoriteMovieAdapter
 import com.summer.internship.tvtracker.databinding.FragmentFavoritesBinding
@@ -29,7 +29,7 @@ class FavoritesFragment : Fragment() {
 
         movies = FavoriteMovie.createMovieList(20)
 
-        val adapter = FavoriteMovieAdapter(movies, TheMovieDbGlideImageLoader()) {
+        val adapter = FavoriteMovieAdapter(movies, GlideImageLoader()) {
             showToast(it)
         }
 

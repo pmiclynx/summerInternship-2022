@@ -10,12 +10,11 @@ import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.Observer
 import androidx.recyclerview.widget.LinearLayoutManager
-import com.summer.internship.tvtracker.ui.TheMovieDbGlideImageLoader
+import com.summer.internship.tvtracker.ui.GlideImageLoader
 import com.summer.internship.tvtracker.domain.Movie
 import com.summer.internship.tvtracker.ui.MoviesAdapter
 import com.summer.internship.tvtracker.databinding.FragmentTopRatedBinding
 import com.summer.internship.tvtracker.ui.detailsScreen.DetailsScreenActivity
-import com.summer.internship.tvtracker.ui.popular.showToast
 
 class TopRatedFragment : Fragment() {
     private lateinit var binding: FragmentTopRatedBinding
@@ -40,7 +39,7 @@ class TopRatedFragment : Fragment() {
     }
 
     private fun loadMovies(list:List<Movie>){
-        val adapter = MoviesAdapter(list, TheMovieDbGlideImageLoader()) {
+        val adapter = MoviesAdapter(list, GlideImageLoader()) {
             val intent = Intent(requireContext(), DetailsScreenActivity::class.java)
             intent.putExtra("id",it)
             startActivity(intent)

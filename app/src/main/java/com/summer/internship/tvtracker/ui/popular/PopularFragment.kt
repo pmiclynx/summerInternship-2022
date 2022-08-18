@@ -10,7 +10,7 @@ import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.Observer
 import androidx.recyclerview.widget.LinearLayoutManager
-import com.summer.internship.tvtracker.ui.TheMovieDbGlideImageLoader
+import com.summer.internship.tvtracker.ui.GlideImageLoader
 import com.summer.internship.tvtracker.databinding.FragmentPopularBinding
 import com.summer.internship.tvtracker.domain.Movie
 import com.summer.internship.tvtracker.ui.MoviesAdapter
@@ -35,7 +35,7 @@ class PopularFragment : Fragment() {
         val model: PopularViewModel by viewModels()
 
         model.getMovies().observe(viewLifecycleOwner, Observer<List<Movie>> { movies ->
-            val adapter = MoviesAdapter(movies, TheMovieDbGlideImageLoader()) {
+            val adapter = MoviesAdapter(movies, GlideImageLoader()) {
                 val intent = Intent(requireContext(), DetailsScreenActivity::class.java)
                 intent.putExtra("id",it)
                 startActivity(intent)

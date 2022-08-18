@@ -4,7 +4,7 @@ import android.view.View
 import android.widget.ImageView
 import com.bumptech.glide.Glide
 
-class TheMovieDbGlideImageLoader: ImageLoader {
+class GlideImageLoader: ImageLoader {
     override fun loadImage(view: View, url: String, img: ImageView) {
         Glide.with(view)
             .load(url)
