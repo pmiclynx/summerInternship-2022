@@ -1,5 +1,7 @@
-package com.summer.internship.tvtracker.data.register
+package com.summer.internship.tvtracker.di
 
+import com.summer.internship.tvtracker.data.register.CreateAccountFirebaseDataSource
+import com.summer.internship.tvtracker.data.register.CreateAccountRepositoryIMPL
 import com.summer.internship.tvtracker.domain.register.CreateAccRepositoryFactory
 import com.summer.internship.tvtracker.domain.register.CreateAccountRepository
 

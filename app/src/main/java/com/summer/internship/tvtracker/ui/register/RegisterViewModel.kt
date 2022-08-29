@@ -2,7 +2,7 @@ package com.summer.internship.tvtracker.ui.register
 
 import android.util.Patterns
 import androidx.lifecycle.ViewModel
-import com.summer.internship.tvtracker.data.register.CreateAccRepositoryFactoryIMPL
+import com.summer.internship.tvtracker.di.CreateAccRepositoryFactoryIMPL
 import com.summer.internship.tvtracker.domain.register.CreateAccountListener
 
 class RegisterViewModel : ViewModel() {

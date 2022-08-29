@@ -1,7 +1,14 @@
 package com.summer.internship.tvtracker.data
 
 import android.util.Log
+import androidx.room.Room
+import com.google.firebase.auth.ktx.auth
+import com.google.firebase.firestore.ktx.firestore
+import com.google.firebase.ktx.Firebase
+import com.summer.internship.tvtracker.data.room.Favorite
+import com.summer.internship.tvtracker.data.room.database.AppDatabase
 import com.summer.internship.tvtracker.domain.*
+import com.summer.internship.tvtracker.domain.details.OnAddListener
 import okhttp3.OkHttpClient
 import okhttp3.logging.HttpLoggingInterceptor
 import retrofit2.Call
@@ -9,9 +16,16 @@ import retrofit2.Callback
 import retrofit2.Response
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
+import java.net.UnknownHostException
 
 object MoviesRemoteDataSource : MoviesDataSource {
     private val themoviedb: Themoviedb = createMovieAPI()
+    private val db = Firebase.firestore
+    private val favorites = db.collection("favorites")
+    private val userID = Firebase.auth.currentUser?.uid
+//    private val dataBase = Room.databaseBuilder(applicationContext,
+//        AppDatabase::class.java, "Favorite"
+//    ).build()
 
     override fun getPopular(movieResponseListener: MovieResponseListener) {
         generateMovieList(themoviedb.getPopular(), movieResponseListener)
@@ -23,6 +37,45 @@ object MoviesRemoteDataSource : MoviesDataSource {
 
     override fun getMovieDetails(id: Long, detailsResponseListener: DetailsResponseListener) {
         getMovieDetails(themoviedb.getMovieDetails(id), detailsResponseListener)
+    }
+
+    override fun addFavorite(
+        detailsResponse: TvDetailsResponse,
+        id: Long?,
+        onAddListener: OnAddListener
+    ) {
+        userID?.let {
+            val favoritesRef = favorites.document(it).collection("favoriteMovies")
+//            favoritesRef.add(detailsResponse)
+            id?.let {
+                favoritesRef
+                    .document(id.toString())
+                    .get()
+                    .addOnSuccessListener { result ->
+                        if (!result.exists()) {
+//                            val favoriteDao = database.favoriteDao()
+//                            val fav: Favorite = Favorite(
+//                                id,
+//                                detailsResponse.backdropPath,
+//                                detailsResponse.overView,
+//                                detailsResponse.posterPath,
+//                                detailsResponse.voteAverage,
+//                                detailsResponse.name
+//                            )
+//                            favoriteDao.insert(fav)
+                            favoritesRef.document(id.toString()).set(detailsResponse)
+                            onAddListener.onAdd()
+
+                        } else {
+                            onAddListener.onFail()
+                        }
+                    }
+                    .addOnFailureListener { exp ->
+                        Log.d("aaaaaaa", exp.toString())
+                        onAddListener.onFail()
+                    }
+            }
+        }
     }
 
     private fun generateMovieList(
@@ -43,7 +96,7 @@ object MoviesRemoteDataSource : MoviesDataSource {
                 }
             },
             onError = {
-                movieResponseListener.onError()
+                movieResponseListener.onError(it)
             })
     }
 
@@ -68,7 +121,7 @@ object MoviesRemoteDataSource : MoviesDataSource {
     private fun <T> executeAPICall(
         apiCall: Call<T>,
         onSuccess: (T) -> Unit,
-        onError: () -> Unit
+        onError: (e:Throwable) -> Unit
     ) {
 
         apiCall.enqueue(object : Callback<T> {
@@ -79,8 +132,7 @@ object MoviesRemoteDataSource : MoviesDataSource {
             }
 
             override fun onFailure(call: Call<T>, t: Throwable) {
-                Log.d("myTag", "Error loading movies")
-                onError()
+                onError(t)
             }
         })
 

@@ -2,18 +2,14 @@ package com.summer.internship.tvtracker.ui.login
 
 import android.content.Intent
 import android.os.Bundle
-import android.util.Patterns
 import android.view.View
 import android.widget.Toast
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
-import androidx.fragment.app.viewModels
-import com.summer.internship.tvtracker.data.login.SignInRepositoryFactoryIMPL
 import com.summer.internship.tvtracker.databinding.ActivityLoginBinding
 import com.summer.internship.tvtracker.domain.login.SignInListener
 import com.summer.internship.tvtracker.ui.MainActivity
 import com.summer.internship.tvtracker.ui.register.RegisterActivity
-import com.summer.internship.tvtracker.ui.topRated.TopRatedViewModel
 
 class LoginActivity : AppCompatActivity() {
     private lateinit var binding: ActivityLoginBinding

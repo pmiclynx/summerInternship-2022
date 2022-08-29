@@ -1,9 +1,8 @@
 package com.summer.internship.tvtracker.ui.login
 
 import android.util.Patterns
-import android.widget.Toast
 import androidx.lifecycle.ViewModel
-import com.summer.internship.tvtracker.data.login.SignInRepositoryFactoryIMPL
+import com.summer.internship.tvtracker.di.SignInRepositoryFactoryIMPL
 import com.summer.internship.tvtracker.domain.login.SignInListener
 
 class LoginViewModel : ViewModel() {
