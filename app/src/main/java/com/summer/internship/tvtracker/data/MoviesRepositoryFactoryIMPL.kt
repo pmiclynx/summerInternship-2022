@@ -4,9 +4,9 @@ import com.summer.internship.tvtracker.domain.MoviesRepository
 import com.summer.internship.tvtracker.domain.MoviesRepositoryFactory
 
 
-object MoviesRepositoryFactoryIMPL : MoviesRepositoryFactory {
+object MoviesRepositoryFactoryIMPL {
 
-    private val instance by lazy { MoviesRepositoryIMPL(MoviesRemoteDataSource) }
+    //    private val instance by lazy { MoviesRepositoryIMPL(MoviesRemoteDataSource) }
 //        override fun createMoviesRepository(): MoviesRepository {
 //            return instance
 //        }
@@ -22,14 +22,21 @@ object MoviesRepositoryFactoryIMPL : MoviesRepositoryFactory {
 //            return inst
 //        }
 
-//        private var instance :MoviesRepository? = null
-//        override fun createMoviesRepository(): MoviesRepository {
-//            if (instance === null) {
-//                instance = MoviesRepositoryIMPL(MoviesRemoteDataSource)
+//    @Volatile
+//    private var instance: MoviesRepository? = null
+//
+//    @Synchronized
+//    override fun createMoviesRepository(): MoviesRepository {
+//        if (instance == null) {
+//            synchronized(this) {
+//                if (instance === null) {
+//                    instance = MoviesRepositoryIMPL(MoviesRemoteDataSource,MoviesLocalDataSource)
+//                }
 //            }
-//            return instance as MoviesRepositoryIMPL
 //        }
+//        return instance as MoviesRepositoryIMPL
 
-    //??
-    override fun createMoviesRepository(): MoviesRepository = instance
+        //??
+//    override fun createMoviesRepository(): MoviesRepository = instance
+//    }
 }

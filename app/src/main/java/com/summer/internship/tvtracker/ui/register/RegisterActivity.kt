@@ -2,15 +2,12 @@ package com.summer.internship.tvtracker.ui.register
 
 import android.content.Intent
 import android.os.Bundle
-import android.util.Patterns
 import android.view.View
 import android.widget.Toast
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
 import com.summer.internship.tvtracker.databinding.ActivityRegisterBinding
 import com.summer.internship.tvtracker.ui.MainActivity
-import com.summer.internship.tvtracker.data.register.CreateAccRepositoryFactoryIMPL
-import com.summer.internship.tvtracker.data.register.CreateAccountFirebaseDataSource
 import com.summer.internship.tvtracker.domain.register.CreateAccountListener
 
 class RegisterActivity : AppCompatActivity() {

@@ -1,5 +1,7 @@
-package com.summer.internship.tvtracker.data.login
+package com.summer.internship.tvtracker.di
 
+import com.summer.internship.tvtracker.data.login.SignInFirebaseDataSource
+import com.summer.internship.tvtracker.data.login.SignInRepositoryIMPL
 import com.summer.internship.tvtracker.domain.login.SignInRepository
 import com.summer.internship.tvtracker.domain.login.SignInRepositoryFactory
 

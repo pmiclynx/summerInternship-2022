@@ -3,12 +3,13 @@ package com.summer.internship.tvtracker.ui.detailsScreen
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
-import com.summer.internship.tvtracker.data.MoviesRepositoryFactoryIMPL
 import com.summer.internship.tvtracker.data.TvDetailsResponse
+import com.summer.internship.tvtracker.di.DependencyInjector
 import com.summer.internship.tvtracker.domain.DetailsResponseListener
+import com.summer.internship.tvtracker.domain.details.OnAddListener
 
 class DetailsViewModel() : ViewModel() {
-    private val moviesRepository = MoviesRepositoryFactoryIMPL.createMoviesRepository()
+    private val moviesRepository = DependencyInjector.provideMovieRepository()
     private val details: MutableLiveData<TvDetailsResponse> by lazy {
         MutableLiveData<TvDetailsResponse>()
     }
@@ -24,5 +25,13 @@ class DetailsViewModel() : ViewModel() {
             }
 
         })
+    }
+
+    fun addFavorite(
+        detailsResponse: TvDetailsResponse,
+        id: Long?,
+        onAddListener: OnAddListener
+    ) {
+        moviesRepository.addFavorite(detailsResponse, id, onAddListener)
     }
 }

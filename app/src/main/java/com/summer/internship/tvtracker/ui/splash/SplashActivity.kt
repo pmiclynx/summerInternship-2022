@@ -9,6 +9,8 @@ import com.google.firebase.ktx.Firebase
 import android.os.Handler
 import com.summer.internship.tvtracker.ui.MainActivity
 import com.summer.internship.tvtracker.R
+import com.summer.internship.tvtracker.di.DependencyInjector
+import com.summer.internship.tvtracker.di.RoomModule
 import com.summer.internship.tvtracker.ui.login.LoginActivity
 
 @SuppressLint("CustomSplashScreen")
@@ -17,7 +19,9 @@ class SplashActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_splash)
-
+        RoomModule.initApplicationContext {
+            applicationContext
+        }
         Handler().postDelayed({
             if(Firebase.auth.currentUser != null){
                 val intent = Intent(this, MainActivity::class.java)
