@@ -1,13 +1,16 @@
 package com.summer.internship.tvtracker.data
 
+import android.util.Log
 import com.summer.internship.tvtracker.data.room.Favorite
 import com.summer.internship.tvtracker.data.room.MovieItemPopular
 import com.summer.internship.tvtracker.data.room.MovieItemTopRated
 import com.summer.internship.tvtracker.data.room.dao.FavoriteDao
 import com.summer.internship.tvtracker.data.room.dao.MovieItemPopularDao
 import com.summer.internship.tvtracker.data.room.dao.MovieItemTopRatedDao
+import com.summer.internship.tvtracker.domain.FavoriteMovie
 import com.summer.internship.tvtracker.domain.PopularMovieResponseListener
 import com.summer.internship.tvtracker.domain.TopRatedMovieResponseListener
+import io.reactivex.rxjava3.core.Single
 
 class MoviesLocalDataSource(
     private val favoriteDao: FavoriteDao,
@@ -16,48 +19,43 @@ class MoviesLocalDataSource(
 ) {
 
     fun addFavorite(fav: Favorite) {
-        Thread {
-            favoriteDao.insert(fav)
-        }.start()
-
+        Log.d("aaaaaaa", Thread.currentThread().toString())
+        favoriteDao.insert(fav)
     }
 
     fun addPopular(pop: List<MovieItemPopular>) {
-        Thread {
-            popularDao.insert(pop)
-        }.start()
+        popularDao.insert(pop)
     }
 
     fun deleteAllPopular() {
-        Thread {
-            popularDao.deleteAll()
-        }.start()
+        popularDao.deleteAll()
     }
 
-    fun getAllPopular(popularMovieResponseListener: PopularMovieResponseListener) {
-        Thread {
-            val list = popularDao.getAll()
-            popularMovieResponseListener.onMoviesReceived(list)
-        }.start()
+    fun getAllPopular(): Single<List<MovieItemPopular>> {
+        return popularDao.getAll()
     }
 
-    fun getAllTopRated(topRatedMovieResponseListener: TopRatedMovieResponseListener) {
-        Thread {
-            val list = topRatedDao.getAll()
-            topRatedMovieResponseListener.onMoviesReceived(list)
-        }.start()
+    fun getAllTopRated(): Single<List<MovieItemTopRated>> {
+        return topRatedDao.getAll()
+    }
+
+    fun getAllFavorites(): Single<List<Favorite>> {
+        return favoriteDao.getAll()
     }
 
     fun addTopRated(top: List<MovieItemTopRated>) {
-        Thread {
-            topRatedDao.insert(top)
-        }.start()
+        topRatedDao.insert(top)
     }
 
     fun deleteAllTopRated() {
-        Thread {
-            topRatedDao.deleteAll()
+        topRatedDao.deleteAll()
+    }
+
+    fun deleteFavorite(id: Long) {
+        Thread{
+            favoriteDao.deleteWithId(id)
         }.start()
+
     }
 
 

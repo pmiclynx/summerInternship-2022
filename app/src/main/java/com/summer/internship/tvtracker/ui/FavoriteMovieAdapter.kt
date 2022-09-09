@@ -9,15 +9,18 @@ import com.summer.internship.tvtracker.databinding.ItemFavoriteMovieBinding
 class FavoriteMovieAdapter(
     private val movies: ArrayList<FavoriteMovie>,
     private val imageLoader: ImageLoader,
-    private val clickListener: (String) -> Unit
+    private val clickListener: (FavoriteMovie) -> Unit
 ) : RecyclerView.Adapter<FavoriteMovieAdapter.ViewHolder>() {
 
-    class ViewHolder(private val binding: ItemFavoriteMovieBinding,private val imageLoader: ImageLoader) :
+    class ViewHolder(
+        private val binding: ItemFavoriteMovieBinding,
+        private val imageLoader: ImageLoader
+    ) :
         MoviesAdapter.ViewHolder(binding, imageLoader) {
 
         fun bind(
             movie: FavoriteMovie,
-            clickListener: (String) -> Unit,
+            clickListener: (FavoriteMovie) -> Unit,
             clickDelete: (pos: Int) -> Unit
         ) {
 
@@ -25,7 +28,7 @@ class FavoriteMovieAdapter(
 
             imageLoader.loadImage(
                 binding.root,
-                "/6KyJeOW7vTW0czdR0S6wzXAcfmw.jpg",
+                movie.url,
                 binding.imageViewMovie
             )
 
@@ -33,9 +36,7 @@ class FavoriteMovieAdapter(
 
             binding.buttonDelete.setOnClickListener {
                 clickDelete(adapterPosition)
-            }
-            binding.root.setOnClickListener {
-                clickListener(movie.title)
+                clickListener(movie)
             }
         }
     }

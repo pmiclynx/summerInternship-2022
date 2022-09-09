@@ -4,77 +4,130 @@ import android.util.Log
 import androidx.room.Room
 import com.google.firebase.auth.ktx.auth
 import com.google.firebase.firestore.ktx.firestore
+import com.google.firebase.firestore.ktx.toObject
 import com.google.firebase.ktx.Firebase
 import com.summer.internship.tvtracker.data.room.Favorite
 import com.summer.internship.tvtracker.data.room.database.AppDatabase
 import com.summer.internship.tvtracker.domain.*
 import com.summer.internship.tvtracker.domain.details.OnAddListener
+import io.reactivex.rxjava3.core.Single
+import io.reactivex.rxjava3.schedulers.Schedulers
 import okhttp3.OkHttpClient
 import okhttp3.logging.HttpLoggingInterceptor
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
 import retrofit2.Retrofit
+
+import retrofit2.adapter.rxjava3.RxJava3CallAdapterFactory
 import retrofit2.converter.gson.GsonConverterFactory
 import java.net.UnknownHostException
+import java.time.Instant
+import java.time.ZoneOffset
+import java.time.format.DateTimeFormatter
 
 object MoviesRemoteDataSource : MoviesDataSource {
     private val themoviedb: Themoviedb = createMovieAPI()
     private val db = Firebase.firestore
     private val favorites = db.collection("favorites")
     private val userID = Firebase.auth.currentUser?.uid
-//    private val dataBase = Room.databaseBuilder(applicationContext,
-//        AppDatabase::class.java, "Favorite"
-//    ).build()
 
-    override fun getPopular(movieResponseListener: MovieResponseListener) {
-        generateMovieList(themoviedb.getPopular(), movieResponseListener)
+    override fun getPopular(): Single<QuoteList> {
+        return themoviedb.getPopular()
     }
 
-    override fun getTopRated(movieResponseListener: MovieResponseListener) {
-        generateMovieList(themoviedb.getTopRated(), movieResponseListener)
+    override fun getTopRated(): Single<QuoteList> {
+        return themoviedb.getTopRated()
     }
 
-    override fun getMovieDetails(id: Long, detailsResponseListener: DetailsResponseListener) {
-        getMovieDetails(themoviedb.getMovieDetails(id), detailsResponseListener)
+    override fun getMovieDetails(id: Long): Single<TvDetailsResponse> {
+        return themoviedb.getMovieDetails(id)
     }
 
     override fun addFavorite(
         detailsResponse: TvDetailsResponse,
-        id: Long?,
-        onAddListener: OnAddListener
-    ) {
-        userID?.let {
-            val favoritesRef = favorites.document(it).collection("favoriteMovies")
-//            favoritesRef.add(detailsResponse)
-            id?.let {
+        id: Long?
+    ): Single<String> {
+        return Single.create { emitter ->
+            userID?.let {
+                val favoritesRef = favorites.document(it).collection("favoriteMovies")
+                id?.let {
+                    favoritesRef
+                        .document(id.toString())
+                        .get()
+                        .addOnSuccessListener { result ->
+                            if (!result.exists()) {
+                                favoritesRef.document(id.toString()).set(
+                                    MovieFavorite(
+                                        detailsResponse.backdropPath,
+                                        detailsResponse.overView,
+                                        detailsResponse.posterPath,
+                                        detailsResponse.voteAverage,
+                                        detailsResponse.name,
+                                        DateTimeFormatter
+                                            .ofPattern("yyyy-MM-dd")
+                                            .withZone(ZoneOffset.UTC)
+                                            .format(Instant.now())
+                                    )
+                                )
+                                emitter.onSuccess(id.toString())
+
+                            } else {
+                                emitter.onError(Throwable("movie already exists"))
+                            }
+                        }
+                        .addOnFailureListener { exp ->
+                            Log.d("aaaaaaa", exp.toString())
+                            emitter.onError(exp)
+                        }
+                }
+            }
+        }
+
+    }
+
+    override fun getFavorites(): Single<List<FavoriteMovie>> {
+        return Single.create { emitter ->
+            userID?.let {
+                val favoritesRef = favorites.document(it).collection("favoriteMovies")
                 favoritesRef
-                    .document(id.toString())
                     .get()
                     .addOnSuccessListener { result ->
-                        if (!result.exists()) {
-//                            val favoriteDao = database.favoriteDao()
-//                            val fav: Favorite = Favorite(
-//                                id,
-//                                detailsResponse.backdropPath,
-//                                detailsResponse.overView,
-//                                detailsResponse.posterPath,
-//                                detailsResponse.voteAverage,
-//                                detailsResponse.name
-//                            )
-//                            favoriteDao.insert(fav)
-                            favoritesRef.document(id.toString()).set(detailsResponse)
-                            onAddListener.onAdd()
-
-                        } else {
-                            onAddListener.onFail()
+                        val favoriteMovieList: ArrayList<FavoriteMovie> =
+                            arrayListOf<FavoriteMovie>()
+                        for (document in result) {
+                            Log.d("ao", document.data.toString())
+                            val response = document.toObject<FavoriteResponse>()
+                            favoriteMovieList.add(
+                                FavoriteMovie(
+                                    response.name!!,
+                                    response.backdropPath!!,
+                                    response.date!!,
+                                    document.id
+                                )
+                            )
                         }
+                        Log.d("aa", favoriteMovieList.toString())
+                        emitter.onSuccess(favoriteMovieList)
                     }
                     .addOnFailureListener { exp ->
                         Log.d("aaaaaaa", exp.toString())
-                        onAddListener.onFail()
+                        emitter.onError(exp)
                     }
             }
+        }
+    }
+
+    override fun deleteFavorite(id: String) {
+        userID?.let {
+            val favoritesRef = favorites.document(it).collection("favoriteMovies")
+            favoritesRef.document(id).delete()
+                .addOnSuccessListener {
+                    Log.d("airb", id)
+                }
+                .addOnFailureListener {
+                        e -> Log.d("airb", "Error deleting document", e)
+                }
         }
     }
 
@@ -121,7 +174,7 @@ object MoviesRemoteDataSource : MoviesDataSource {
     private fun <T> executeAPICall(
         apiCall: Call<T>,
         onSuccess: (T) -> Unit,
-        onError: (e:Throwable) -> Unit
+        onError: (e: Throwable) -> Unit
     ) {
 
         apiCall.enqueue(object : Callback<T> {
@@ -159,6 +212,7 @@ object MoviesRemoteDataSource : MoviesDataSource {
             .baseUrl("https://api.themoviedb.org/3/tv/")
             .client(okHttpClient)
             .addConverterFactory(GsonConverterFactory.create())
+            .addCallAdapterFactory(RxJava3CallAdapterFactory.create())
             .build()
 
         return retrofit.create(Themoviedb::class.java)

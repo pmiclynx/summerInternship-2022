@@ -11,5 +11,6 @@ data class Favorite(
     val overView: String,
     val posterPath: String,
     val voteAverage: Float,
-    val name: String
+    val name: String,
+    val date:String
 )

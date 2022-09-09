@@ -5,11 +5,12 @@ import androidx.room.Insert
 import androidx.room.OnConflictStrategy
 import androidx.room.Query
 import com.summer.internship.tvtracker.data.room.MovieItemPopular
+import io.reactivex.rxjava3.core.Single
 
 @Dao
 interface MovieItemPopularDao {
     @Query("SELECT * FROM MovieItemPopular")
-    fun getAll(): List<MovieItemPopular>
+    fun getAll(): Single<List<MovieItemPopular>>
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     fun insert(vararg movies: MovieItemPopular)

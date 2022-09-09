@@ -17,8 +17,24 @@ class RegisterActivity : AppCompatActivity() {
         binding = ActivityRegisterBinding.inflate(layoutInflater)
         setContentView(binding.root)
         val model: RegisterViewModel by viewModels()
+        model.isLoginSuccessful.observe(this) {
+            val intent = Intent(this@RegisterActivity, MainActivity::class.java)
+            binding.Loading.visibility = View.GONE
+            intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK)
+            startActivity(intent)
+            finish()
+        }
+        model.isLoginFailed.observe(this) {
+            binding.Loading.visibility = View.GONE
+            Toast.makeText(
+                this@RegisterActivity,
+                "Error creating account",
+                Toast.LENGTH_SHORT
+            )
+                .show()
+        }
         binding.buttonRegister.setOnClickListener {
-            binding.Loading.visibility= View.VISIBLE
+            binding.Loading.visibility = View.VISIBLE
             if (model.isOk(
                     binding.editTextEmail.text.toString(),
                     binding.editTextPassword.text.toString(),
@@ -28,29 +44,10 @@ class RegisterActivity : AppCompatActivity() {
             ) {
                 model.createAccount(
                     binding.editTextEmail.text.toString(),
-                    binding.editTextPassword.text.toString(),
-                    object : CreateAccountListener {
-                        override fun onCreateAccount() {
-                            val intent = Intent(this@RegisterActivity, MainActivity::class.java)
-                            binding.Loading.visibility= View.GONE
-                            intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK)
-                            startActivity(intent)
-                            finish()
-                        }
-
-                        override fun onError() {
-                            binding.Loading.visibility= View.GONE
-                            Toast.makeText(
-                                this@RegisterActivity,
-                                "Error creating account",
-                                Toast.LENGTH_SHORT
-                            )
-                                .show()
-                        }
-
-                    }
+                    binding.editTextPassword.text.toString()
                 )
             } else {
+                binding.Loading.visibility = View.GONE
                 Toast.makeText(
                     this@RegisterActivity,
                     "Invalid fields",

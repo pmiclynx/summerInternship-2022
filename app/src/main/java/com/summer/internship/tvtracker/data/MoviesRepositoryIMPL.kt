@@ -5,7 +5,11 @@ import com.summer.internship.tvtracker.data.room.Favorite
 import com.summer.internship.tvtracker.data.room.MovieItemPopular
 import com.summer.internship.tvtracker.data.room.MovieItemTopRated
 import com.summer.internship.tvtracker.domain.*
-import com.summer.internship.tvtracker.domain.details.OnAddListener
+import io.reactivex.rxjava3.core.Single
+import io.reactivex.rxjava3.schedulers.Schedulers
+import java.time.Instant
+import java.time.ZoneOffset
+import java.time.format.DateTimeFormatter
 
 
 class MoviesRepositoryIMPL(
@@ -13,100 +17,123 @@ class MoviesRepositoryIMPL(
     private val moviesLocalDataSource: MoviesLocalDataSource
 ) :
     MoviesRepository {
-    override fun getPopular(movieResponseListener: MovieResponseListener) {
-        moviesDataSource.getPopular(object : MovieResponseListener {
-            override fun onMoviesReceived(list: List<Movie>) {
-                moviesLocalDataSource.deleteAllPopular()
-                moviesLocalDataSource.addPopular(list.map { mov ->
-                    MovieItemPopular(
-                        mov.id,
-                        mov.title,
-                        mov.url
+    override fun getPopular(): Single<List<Movie>> {
+        return moviesDataSource.getPopular().map {
+            moviesLocalDataSource.deleteAllPopular()
+            moviesLocalDataSource.addPopular(it.results.map { popularMovie ->
+                MovieItemPopular(
+                    popularMovie.id,
+                    popularMovie.name,
+                    "https://image.tmdb.org/t/p/w500" + popularMovie.backdrop_path
+                )
+            })
+            it.results.map { result ->
+                Movie(
+                    result.name,
+                    "https://image.tmdb.org/t/p/w500" + result.backdrop_path,
+                    result.id
+                )
+            }
+        }.onErrorResumeNext {
+            moviesLocalDataSource.getAllPopular().map { popularMovieList ->
+                popularMovieList.map {
+                    Movie(
+                        it.title,
+                        it.url,
+                        it.id
                     )
-                })
-                movieResponseListener.onMoviesReceived(list)
+                }
             }
-
-            override fun onError(e: Throwable) {
-                moviesLocalDataSource.getAllPopular(object : PopularMovieResponseListener {
-                    override fun onMoviesReceived(list: List<MovieItemPopular>) {
-                        Log.d("myTag", list.toString())
-                        movieResponseListener.onMoviesReceived(list.map { mov ->
-                            Movie(
-                                mov.title,
-                                mov.url,
-                                mov.id
-                            )
-                        })
-                        Log.d("myTag", "da")
-                    }
-
-                })
-
-            }
-
-        })
+        }
     }
 
-    override fun getTopRated(movieResponseListener: MovieResponseListener) {
-        moviesDataSource.getTopRated(object : MovieResponseListener {
-            override fun onMoviesReceived(list: List<Movie>) {
-                moviesLocalDataSource.deleteAllTopRated()
-                moviesLocalDataSource.addTopRated(list.map { mov ->
-                    MovieItemTopRated(
-                        mov.id,
-                        mov.title,
-                        mov.url
+    override fun getTopRated(): Single<List<Movie>> {
+        Log.d("airb",Thread.currentThread().toString())
+        return moviesDataSource.getTopRated().map {
+            Log.d("airb",Thread.currentThread().toString())
+            moviesLocalDataSource.deleteAllTopRated()
+            moviesLocalDataSource.addTopRated(it.results.map { topRatedMovie ->
+                MovieItemTopRated(
+                    topRatedMovie.id,
+                    topRatedMovie.name,
+                    "https://image.tmdb.org/t/p/w500" + topRatedMovie.backdrop_path
+                )
+            })
+            it.results.map { result ->
+                Movie(
+                    result.name,
+                    "https://image.tmdb.org/t/p/w500" + result.backdrop_path,
+                    result.id
+                )
+            }
+        }.onErrorResumeNext {
+            Log.d("airb","daaaa")
+            moviesLocalDataSource.getAllTopRated().map { topRatedMovieList ->
+                topRatedMovieList.map {
+                    Movie(
+                        it.title,
+                        it.url,
+                        it.id
                     )
-                })
-                movieResponseListener.onMoviesReceived(list)
+                }
             }
-
-            override fun onError(e: Throwable) {
-                moviesLocalDataSource.getAllTopRated(object : TopRatedMovieResponseListener {
-                    override fun onMoviesReceived(list: List<MovieItemTopRated>) {
-                        Log.d("myTag", list.toString())
-                        movieResponseListener.onMoviesReceived(list.map { mov ->
-                            Movie(
-                                mov.title,
-                                mov.url,
-                                mov.id
-                            )
-                        })
-                        Log.d("myTag", "da")
-                    }
-
-                })
-
-            }
-
-        })
+        }
     }
 
-    override fun getMovieDetails(id: Long, detailsResponseListener: DetailsResponseListener) {
-        moviesDataSource.getMovieDetails(id, detailsResponseListener)
+    override fun getMovieDetails(id: Long): Single<TvDetailsResponse> {
+        return moviesDataSource.getMovieDetails(id)
     }
 
     override fun addFavorite(
         detailsResponse: TvDetailsResponse,
-        id: Long?,
-        onAddListener: OnAddListener
-    ) {
-        moviesDataSource.addFavorite(detailsResponse, id, onAddListener)
-//        moviesLocalDataSource.context = appContext
-        id?.let {
-            val fav = Favorite(
-                id,
-                detailsResponse.backdropPath,
-                detailsResponse.overView,
-                detailsResponse.posterPath,
-                detailsResponse.voteAverage,
-                detailsResponse.name
-            )
-            Log.d("aaa", fav.toString())
-            moviesLocalDataSource.addFavorite(fav)
+        id: Long?
+    ): Single<String> {
+        Log.d("airb",Thread.currentThread().toString())
+        return moviesDataSource.addFavorite(detailsResponse, id).map {
+            Log.d("airb",Thread.currentThread().toString())
+            id?.let {
+                val favoriteMovie = Favorite(
+                    id,
+                    detailsResponse.backdropPath,
+                    detailsResponse.overView,
+                    detailsResponse.posterPath,
+                    detailsResponse.voteAverage,
+                    detailsResponse.name,
+                    DateTimeFormatter
+                        .ofPattern("yyyy-MM-dd")
+                        .withZone(ZoneOffset.UTC)
+                        .format(Instant.now())
+                )
+                Log.d("aaa", favoriteMovie.toString())
+                moviesLocalDataSource.addFavorite(favoriteMovie)
+            }
+            it
         }
-
-
     }
+
+    override fun getFavorites(): Single<List<FavoriteMovie>> {
+        return moviesDataSource.getFavorites().map {
+            Log.d("aitag1", "nu")
+            it
+        }.onErrorResumeNext {
+            Log.d("aitag1", "daa")
+            moviesLocalDataSource.getAllFavorites().map { favoriteMovieList ->
+                favoriteMovieList.map {
+                    FavoriteMovie(
+                        it.name,
+                        it.backdropPath,
+                        it.date,
+                        it.id.toString()
+                    )
+                }
+            }
+        }
+    }
+
+    override fun deleteFavorite(id: String) {
+        moviesDataSource.deleteFavorite(id)
+        moviesLocalDataSource.deleteFavorite(id.toLong())
+    }
+
+
 }

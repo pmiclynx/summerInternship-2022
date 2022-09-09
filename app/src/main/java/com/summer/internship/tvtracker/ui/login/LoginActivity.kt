@@ -2,54 +2,61 @@ package com.summer.internship.tvtracker.ui.login
 
 import android.content.Intent
 import android.os.Bundle
+import android.util.Log
 import android.view.View
 import android.widget.Toast
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
 import com.summer.internship.tvtracker.databinding.ActivityLoginBinding
+import com.summer.internship.tvtracker.domain.Movie
 import com.summer.internship.tvtracker.domain.login.SignInListener
 import com.summer.internship.tvtracker.ui.MainActivity
 import com.summer.internship.tvtracker.ui.register.RegisterActivity
+import io.reactivex.rxjava3.android.schedulers.AndroidSchedulers
+import io.reactivex.rxjava3.core.Observer
+import io.reactivex.rxjava3.core.Scheduler
+import io.reactivex.rxjava3.core.SingleObserver
+import io.reactivex.rxjava3.disposables.CompositeDisposable
+import io.reactivex.rxjava3.disposables.Disposable
+import io.reactivex.rxjava3.schedulers.Schedulers
 
 class LoginActivity : AppCompatActivity() {
     private lateinit var binding: ActivityLoginBinding
+    val compositeDisposable = CompositeDisposable()
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = ActivityLoginBinding.inflate(layoutInflater)
         setContentView(binding.root)
         val model: LoginViewModel by viewModels()
+        model.isLoginSuccessful.observe(this) {
+            val intent = Intent(this@LoginActivity, MainActivity::class.java)
+            binding.Loading.visibility = View.GONE
+            startActivity(intent)
+            finish()
+        }
+        model.isLoginFailed.observe(this) {
+            binding.Loading.visibility = View.GONE
+            Toast.makeText(
+                this@LoginActivity,
+                "Authentication failed",
+                Toast.LENGTH_SHORT
+            )
+                .show()
+        }
         binding.buttonLogin.setOnClickListener {
 
-            binding.Loading.visibility= View.VISIBLE
+            binding.Loading.visibility = View.VISIBLE
             if (model.isValid(
                     binding.editTextEmail.text.toString(),
                     binding.editTextPassword.text.toString()
                 )
             ) {
-
                 model.signIn(
                     binding.editTextEmail.text.toString(),
                     binding.editTextPassword.text.toString(),
-                    object : SignInListener {
-                        override fun onSignIn() {
-                            val intent = Intent(this@LoginActivity, MainActivity::class.java)
-                            binding.Loading.visibility= View.GONE
-                            startActivity(intent)
-                            finish()
-                        }
-
-                        override fun onError() {
-                            binding.Loading.visibility= View.GONE
-                            Toast.makeText(
-                                this@LoginActivity,
-                                "Authentication failed",
-                                Toast.LENGTH_SHORT
-                            )
-                                .show()
-                        }
-
-                    })
+                )
             } else {
+                binding.Loading.visibility = View.GONE
                 Toast.makeText(
                     this@LoginActivity,
                     "Invalid email or password",
@@ -64,6 +71,11 @@ class LoginActivity : AppCompatActivity() {
             val intent = Intent(this, RegisterActivity::class.java)
             startActivity(intent)
         }
+    }
+
+    override fun onDestroy() {
+        super.onDestroy()
+        compositeDisposable.dispose()
     }
 
 

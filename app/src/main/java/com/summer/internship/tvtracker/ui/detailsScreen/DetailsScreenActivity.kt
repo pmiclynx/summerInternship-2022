@@ -1,7 +1,9 @@
 package com.summer.internship.tvtracker.ui.detailsScreen
 
+import android.content.Intent
 import android.os.Bundle
 import android.util.Log
+import android.view.View
 import android.widget.Toast
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
@@ -11,10 +13,12 @@ import com.summer.internship.tvtracker.databinding.ActivityDetailsScreenBinding
 import com.summer.internship.tvtracker.di.RoomModule
 import com.summer.internship.tvtracker.domain.details.OnAddListener
 import com.summer.internship.tvtracker.ui.GlideImageLoader
+import com.summer.internship.tvtracker.ui.MainActivity
 
 class DetailsScreenActivity : AppCompatActivity() {
     private lateinit var binding: ActivityDetailsScreenBinding
     private lateinit var details: TvDetailsResponse
+    val model: DetailsViewModel by viewModels()
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = ActivityDetailsScreenBinding.inflate(layoutInflater)
@@ -23,7 +27,7 @@ class DetailsScreenActivity : AppCompatActivity() {
         val id = extras?.getLong("id")
         Log.i("aaaaaaa", id.toString())
 
-        val model: DetailsViewModel by viewModels()
+
         model.getDetails().observe(this, Observer<TvDetailsResponse> { details ->
             Log.i("aaaaaaa", details.overView)
             binding.textviewOverview.text = details.overView
@@ -42,28 +46,23 @@ class DetailsScreenActivity : AppCompatActivity() {
             this.details = details
 
         })
-
-
+        model.isAddSuccessful.observe(this) {
+            Toast.makeText(
+                this@DetailsScreenActivity,
+                "Added to Favorites",
+                Toast.LENGTH_SHORT
+            ).show()
+        }
+        model.isAddFailed.observe(this) {
+            Toast.makeText(
+                this@DetailsScreenActivity,
+                "Error or movie already exists",
+                Toast.LENGTH_SHORT
+            ).show()
+        }
         binding.buttonFavorite.setOnClickListener {
             if (this::details.isInitialized) {
-                model.addFavorite(details, id, object : OnAddListener {
-                    override fun onAdd() {
-                        Toast.makeText(
-                            this@DetailsScreenActivity,
-                            "Added to Favorites",
-                            Toast.LENGTH_SHORT
-                        ).show()
-                    }
-
-                    override fun onFail() {
-                        Toast.makeText(
-                            this@DetailsScreenActivity,
-                            "Error or movie already exists",
-                            Toast.LENGTH_SHORT
-                        ).show()
-                    }
-
-                })
+                model.addFavorite(details, id)
             }
         }
         id?.let {
@@ -71,4 +70,5 @@ class DetailsScreenActivity : AppCompatActivity() {
         }
 
     }
+
 }

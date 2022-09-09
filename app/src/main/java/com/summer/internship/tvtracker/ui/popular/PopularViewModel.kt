@@ -7,8 +7,14 @@ import com.summer.internship.tvtracker.data.MoviesRepositoryFactoryIMPL
 import com.summer.internship.tvtracker.di.DependencyInjector
 import com.summer.internship.tvtracker.domain.Movie
 import com.summer.internship.tvtracker.domain.MovieResponseListener
+import io.reactivex.rxjava3.android.schedulers.AndroidSchedulers
+import io.reactivex.rxjava3.core.SingleObserver
+import io.reactivex.rxjava3.disposables.CompositeDisposable
+import io.reactivex.rxjava3.disposables.Disposable
+import io.reactivex.rxjava3.schedulers.Schedulers
 
 class PopularViewModel : ViewModel() {
+    val compositeDisposable=CompositeDisposable()
     private val moviesRepository = DependencyInjector.provideMovieRepository()
     private val movies: MutableLiveData<List<Movie>> by lazy {
         MutableLiveData<List<Movie>>().also {
@@ -21,15 +27,27 @@ class PopularViewModel : ViewModel() {
     }
 
     private fun loadMovies() {
-        moviesRepository.getPopular(object : MovieResponseListener {
-            override fun onMoviesReceived(list: List<Movie>) {
-                movies.postValue(list)
-            }
+        moviesRepository.getPopular()
+            .observeOn(AndroidSchedulers.mainThread())
+            .subscribeOn(Schedulers.io())
+            .subscribe(object:SingleObserver<List<Movie>>{
+                override fun onSubscribe(d: Disposable) {
+                    compositeDisposable.add(d)
+                }
 
-            override fun onError(e:Throwable) {
+                override fun onSuccess(t: List<Movie>) {
+                    movies.postValue(t)
+                }
 
-            }
+                override fun onError(e: Throwable) {
 
-        })
+                }
+
+            })
+    }
+
+    override fun onCleared() {
+        super.onCleared()
+        compositeDisposable.dispose()
     }
 }
