@@ -1,138 +1,113 @@
 package com.summer.internship.tvtracker.data
 
-import android.util.Log
-import com.summer.internship.tvtracker.data.room.Favorite
-import com.summer.internship.tvtracker.data.room.MovieItemPopular
-import com.summer.internship.tvtracker.data.room.MovieItemTopRated
 import com.summer.internship.tvtracker.domain.*
 import io.reactivex.rxjava3.core.Single
+import io.reactivex.rxjava3.functions.BiFunction
 import io.reactivex.rxjava3.schedulers.Schedulers
-import java.time.Instant
-import java.time.ZoneOffset
-import java.time.format.DateTimeFormatter
 
 
 class MoviesRepositoryIMPL(
-    private val moviesDataSource: MoviesDataSource,
-    private val moviesLocalDataSource: MoviesLocalDataSource
+    private val moviesDataSource: RemoteDataSource,
+    private val moviesLocalDataSource: LocalDataSource,
+    private val favoritesDataSource: FavoritesDataSource
 ) :
     MoviesRepository {
-    override fun getPopular(): Single<List<Movie>> {
-        return moviesDataSource.getPopular().map {
+    override fun getPopular(): Single<List<MovieUI>> {
+        return singleZip(moviesDataSource.getPopular()).map {
             moviesLocalDataSource.deleteAllPopular()
-            moviesLocalDataSource.addPopular(it.results.map { popularMovie ->
-                MovieItemPopular(
-                    popularMovie.id,
-                    popularMovie.name,
-                    "https://image.tmdb.org/t/p/w500" + popularMovie.backdrop_path
-                )
+            moviesLocalDataSource.addPopular(it.map { popularMovie ->
+                RemoteMovieMapper.mapToPopularRoom(popularMovie)
             })
-            it.results.map { result ->
-                Movie(
-                    result.name,
-                    "https://image.tmdb.org/t/p/w500" + result.backdrop_path,
-                    result.id
-                )
-            }
+            it
         }.onErrorResumeNext {
-            moviesLocalDataSource.getAllPopular().map { popularMovieList ->
+            moviesLocalDataSource.getPopular().map { popularMovieList ->
                 popularMovieList.map {
-                    Movie(
-                        it.title,
-                        it.url,
-                        it.id
-                    )
+                    RemoteMovieMapper.mapFromPopularRoom(it)
                 }
             }
         }
     }
 
-    override fun getTopRated(): Single<List<Movie>> {
-        Log.d("airb",Thread.currentThread().toString())
-        return moviesDataSource.getTopRated().map {
-            Log.d("airb",Thread.currentThread().toString())
+    private fun singleZip(movies: Single<QuoteList>) = Single.zip(
+        movies.subscribeOn(Schedulers.io()).observeOn(Schedulers.io()),
+        moviesDataSource.getConfig().subscribeOn(Schedulers.io()),
+        BiFunction { firstResponse: QuoteList,
+                     secondResponse: ConfigResponse ->
+            firstResponse.results.map {
+                it.backdrop_path =
+                    secondResponse.images.secure_base_url + secondResponse.images.backdrop_sizes[1] + it.backdrop_path
+                RemoteMovieMapper.mapToEntity(it)
+            }
+        })
+
+    override fun getTopRated(): Single<List<MovieUI>> {
+        return singleZip(moviesDataSource.getTopRated()).map {
             moviesLocalDataSource.deleteAllTopRated()
-            moviesLocalDataSource.addTopRated(it.results.map { topRatedMovie ->
-                MovieItemTopRated(
-                    topRatedMovie.id,
-                    topRatedMovie.name,
-                    "https://image.tmdb.org/t/p/w500" + topRatedMovie.backdrop_path
-                )
+            moviesLocalDataSource.addTopRated(it.map { topRatedMovie ->
+                RemoteMovieMapper.mapToTopRatedRoom(topRatedMovie)
             })
-            it.results.map { result ->
-                Movie(
-                    result.name,
-                    "https://image.tmdb.org/t/p/w500" + result.backdrop_path,
-                    result.id
-                )
-            }
+            it
         }.onErrorResumeNext {
-            Log.d("airb","daaaa")
-            moviesLocalDataSource.getAllTopRated().map { topRatedMovieList ->
+            moviesLocalDataSource.getTopRated().map { topRatedMovieList ->
                 topRatedMovieList.map {
-                    Movie(
-                        it.title,
-                        it.url,
-                        it.id
-                    )
+                    RemoteMovieMapper.mapFromTopRatedRoom(it)
                 }
             }
         }
     }
 
-    override fun getMovieDetails(id: Long): Single<TvDetailsResponse> {
-        return moviesDataSource.getMovieDetails(id)
+    override fun getMovieDetails(id: Long): Single<TvDetailsUi> {
+        return Single.zip(
+            moviesDataSource.getMovieDetails(id),
+            moviesDataSource.getConfig().subscribeOn(Schedulers.io()),
+            BiFunction { firstResponse: TvDetailsResponse,
+                         secondResponse: ConfigResponse ->
+                val url = firstResponse.backdropPath
+                val posterUrl = firstResponse.posterPath
+                firstResponse.backdropPath =
+                    secondResponse.images.secure_base_url + secondResponse.images.backdrop_sizes[1] + url
+                firstResponse.posterPath =
+                    secondResponse.images.secure_base_url + secondResponse.images.backdrop_sizes[1] + posterUrl
+                TvDetailsMapper.mapToEntity(firstResponse)
+            })
+    }
+
+    override fun getConfig(): Single<ConfigResponse> {
+        return moviesDataSource.getConfig()
     }
 
     override fun addFavorite(
-        detailsResponse: TvDetailsResponse,
+        detailsResponse: TvDetailsUi,
         id: Long?
     ): Single<String> {
-        Log.d("airb",Thread.currentThread().toString())
-        return moviesDataSource.addFavorite(detailsResponse, id).map {
-            Log.d("airb",Thread.currentThread().toString())
+        return favoritesDataSource.addFavorite(detailsResponse, id).observeOn(Schedulers.io()).map {
             id?.let {
-                val favoriteMovie = Favorite(
-                    id,
-                    detailsResponse.backdropPath,
-                    detailsResponse.overView,
-                    detailsResponse.posterPath,
-                    detailsResponse.voteAverage,
-                    detailsResponse.name,
-                    DateTimeFormatter
-                        .ofPattern("yyyy-MM-dd")
-                        .withZone(ZoneOffset.UTC)
-                        .format(Instant.now())
+                moviesLocalDataSource.addFavorite(
+                    RemoteFavoriteMovieMapper.mapToLocalFromDetailsResponse(
+                        id,
+                        detailsResponse
+                    )
                 )
-                Log.d("aaa", favoriteMovie.toString())
-                moviesLocalDataSource.addFavorite(favoriteMovie)
             }
             it
         }
     }
 
-    override fun getFavorites(): Single<List<FavoriteMovie>> {
-        return moviesDataSource.getFavorites().map {
-            Log.d("aitag1", "nu")
+    override fun getFavorites(): Single<List<FavoriteMovieUI>> {
+        return favoritesDataSource.getFavorites().map {
             it
         }.onErrorResumeNext {
-            Log.d("aitag1", "daa")
-            moviesLocalDataSource.getAllFavorites().map { favoriteMovieList ->
+            moviesLocalDataSource.getFavorites().map { favoriteMovieList ->
                 favoriteMovieList.map {
-                    FavoriteMovie(
-                        it.name,
-                        it.backdropPath,
-                        it.date,
-                        it.id.toString()
-                    )
+                    RemoteFavoriteMovieMapper.mapToEntity(it)
                 }
             }
         }
     }
 
-    override fun deleteFavorite(id: String) {
-        moviesDataSource.deleteFavorite(id)
-        moviesLocalDataSource.deleteFavorite(id.toLong())
+    override fun deleteFavorite(id: Long) {
+        favoritesDataSource.deleteFavorite(id)
+        moviesLocalDataSource.deleteFavorite(id)
     }
 
 

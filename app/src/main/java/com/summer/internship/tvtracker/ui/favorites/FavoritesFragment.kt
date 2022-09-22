@@ -9,16 +9,15 @@ import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.Observer
 import androidx.recyclerview.widget.LinearLayoutManager
-import com.summer.internship.tvtracker.ui.GlideImageLoader
-import com.summer.internship.tvtracker.domain.FavoriteMovie
-import com.summer.internship.tvtracker.ui.FavoriteMovieAdapter
 import com.summer.internship.tvtracker.databinding.FragmentFavoritesBinding
+import com.summer.internship.tvtracker.domain.FavoriteMovieUI
+import com.summer.internship.tvtracker.ui.FavoriteMovieAdapter
+import com.summer.internship.tvtracker.ui.GlideImageLoader
 import com.summer.internship.tvtracker.ui.detailsScreen.DetailsScreenActivity
-import com.summer.internship.tvtracker.ui.popular.showToast
 
 class FavoritesFragment : Fragment() {
     private lateinit var binding: FragmentFavoritesBinding
-    lateinit var movies: ArrayList<FavoriteMovie>
+    lateinit var movies: ArrayList<FavoriteMovieUI>
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
@@ -34,12 +33,16 @@ class FavoritesFragment : Fragment() {
 
         val model: FavoritesViewModel by viewModels()
 
-        model.loadFavoriteMovies()
+        model.loadMovies()
 
-        model.getFavoriteMovies()
-            .observe(viewLifecycleOwner, Observer<List<FavoriteMovie>> { movies ->
-                val adapter = FavoriteMovieAdapter(ArrayList(movies), GlideImageLoader()) {
-                    model.deleteFavorite(it.id)
+        model.getMovies()
+            .observe(viewLifecycleOwner, Observer<List<FavoriteMovieUI>> { movies ->
+                val adapter = FavoriteMovieAdapter(ArrayList(movies), GlideImageLoader(), {
+                    val intent = Intent(requireContext(), DetailsScreenActivity::class.java)
+                    intent.putExtra("id", it)
+                    startActivity(intent)
+                }) {
+                    model.deleteFavorite(it)
                 }
 
                 binding.apply {

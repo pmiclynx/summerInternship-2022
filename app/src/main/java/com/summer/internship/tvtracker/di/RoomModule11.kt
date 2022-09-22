@@ -7,7 +7,7 @@ import com.summer.internship.tvtracker.data.room.dao.MovieItemPopularDao
 import com.summer.internship.tvtracker.data.room.dao.MovieItemTopRatedDao
 import com.summer.internship.tvtracker.data.room.database.AppDatabase
 
-object RoomModule {
+object RoomModule11 {
 
     private lateinit var applicationContext: () -> Context
 

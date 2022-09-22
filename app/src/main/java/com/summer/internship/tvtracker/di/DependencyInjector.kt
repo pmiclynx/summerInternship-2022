@@ -5,21 +5,21 @@ import com.summer.internship.tvtracker.domain.MoviesRepository
 
 object DependencyInjector {
 
-    @Volatile
-    private var instance: MoviesRepository? = null
-
-    @Synchronized
-    fun provideMovieRepository(): MoviesRepository {
-        if (instance == null) {
-            synchronized(this) {
-                if (instance === null) {
-                    instance = MoviesRepositoryIMPL(
-                        DataProvider.provideRemoteMovieDataSource(),
-                        DataProvider.provideLocalMovieDataSource()
-                    )
-                }
-            }
-        }
-        return instance as MoviesRepositoryIMPL
-    }
+//    @Volatile
+//    private var instance: MoviesRepository? = null
+//
+//    @Synchronized
+//    fun provideMovieRepository(): MoviesRepository {
+//        if (instance == null) {
+//            synchronized(this) {
+//                if (instance === null) {
+//                    instance = MoviesRepositoryIMPL(
+//                        DataProvider.provideRemoteMovieDataSource(),
+//                        DataProvider.provideLocalMovieDataSource()
+//                    )
+//                }
+//            }
+//        }
+//        return instance as MoviesRepositoryIMPL
+//    }
 }

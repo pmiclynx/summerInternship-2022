@@ -2,7 +2,7 @@ package com.summer.internship.tvtracker.data
 
 import com.google.gson.annotations.SerializedName
 
-class MovieFavorite(
+class MovieFavoriteRemote(
     var backdropPath: String,
     val overView: String,
     var posterPath: String,

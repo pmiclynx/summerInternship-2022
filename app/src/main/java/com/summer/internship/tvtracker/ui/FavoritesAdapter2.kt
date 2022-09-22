@@ -6,7 +6,7 @@ import android.widget.ImageView
 import com.summer.internship.tvtracker.databinding.ItemFavoriteMovieBinding
 import com.summer.internship.tvtracker.domain.MovieUI
 
-class FavoriteMovieAdapter(
+class FavoritesAdapter2(
     private val movies: ArrayList<MovieUI>,
     private val imageLoader: ImageLoader,
     private val clickListener: (Long) -> Unit,

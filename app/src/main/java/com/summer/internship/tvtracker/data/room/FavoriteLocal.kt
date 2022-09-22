@@ -4,7 +4,7 @@ import androidx.room.Entity
 import androidx.room.PrimaryKey
 
 @Entity
-data class Favorite(
+data class FavoriteLocal(
     @PrimaryKey(autoGenerate = true)
     val id: Long,
     val backdropPath: String,

@@ -1,23 +1,18 @@
 package com.summer.internship.tvtracker.ui.detailsScreen
 
-import android.content.Intent
 import android.os.Bundle
 import android.util.Log
-import android.view.View
 import android.widget.Toast
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.Observer
-import com.summer.internship.tvtracker.data.TvDetailsResponse
+import com.summer.internship.tvtracker.data.TvDetailsUi
 import com.summer.internship.tvtracker.databinding.ActivityDetailsScreenBinding
-import com.summer.internship.tvtracker.di.RoomModule
-import com.summer.internship.tvtracker.domain.details.OnAddListener
 import com.summer.internship.tvtracker.ui.GlideImageLoader
-import com.summer.internship.tvtracker.ui.MainActivity
 
 class DetailsScreenActivity : AppCompatActivity() {
     private lateinit var binding: ActivityDetailsScreenBinding
-    private lateinit var details: TvDetailsResponse
+    private lateinit var details: TvDetailsUi
     val model: DetailsViewModel by viewModels()
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -28,7 +23,7 @@ class DetailsScreenActivity : AppCompatActivity() {
         Log.i("aaaaaaa", id.toString())
 
 
-        model.getDetails().observe(this, Observer<TvDetailsResponse> { details ->
+        model.getDetails().observe(this, Observer<TvDetailsUi> { details ->
             Log.i("aaaaaaa", details.overView)
             binding.textviewOverview.text = details.overView
             binding.textViewMovieRating.text = details.voteAverage.toString()

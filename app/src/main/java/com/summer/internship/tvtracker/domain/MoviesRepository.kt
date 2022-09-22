@@ -1,19 +1,19 @@
 package com.summer.internship.tvtracker.domain
 
-import android.content.Context
-import com.summer.internship.tvtracker.data.QuoteList
+import com.summer.internship.tvtracker.data.ConfigResponse
 import com.summer.internship.tvtracker.data.TvDetailsResponse
-import com.summer.internship.tvtracker.domain.details.OnAddListener
+import com.summer.internship.tvtracker.data.TvDetailsUi
 import io.reactivex.rxjava3.core.Single
 
 interface MoviesRepository {
-    fun getPopular():Single<List<Movie>>
-    fun getTopRated():Single<List<Movie>>
-    fun getMovieDetails(id: Long):Single<TvDetailsResponse>
+    fun getPopular():Single<List<MovieUI>>
+    fun getTopRated():Single<List<MovieUI>>
+    fun getMovieDetails(id: Long):Single<TvDetailsUi>
+    fun getConfig():Single<ConfigResponse>
     fun addFavorite(
-        detailsResponse: TvDetailsResponse,
+        detailsResponse: TvDetailsUi,
         id: Long?
     ):Single<String>
-    fun getFavorites():Single<List<FavoriteMovie>>
-    fun deleteFavorite(id:String)
+    fun getFavorites():Single<List<FavoriteMovieUI>>
+    fun deleteFavorite(id:Long)
 }

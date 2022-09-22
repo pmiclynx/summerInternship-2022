@@ -6,12 +6,15 @@ import retrofit2.http.GET
 import retrofit2.http.Path
 
 interface Themoviedb {
-    @GET("popular")
+    @GET("tv/popular")
     fun getPopular(): Single<QuoteList>
 
-    @GET("top_rated")
+    @GET("tv/top_rated")
     fun getTopRated(): Single<QuoteList>
 
-    @GET("{tv_id}")
+    @GET("tv/{tv_id}")
     fun getMovieDetails(@Path("tv_id") tvId: Long): Single<TvDetailsResponse>
+
+    @GET("configuration")
+    fun getConfig():Single<ConfigResponse>
 }

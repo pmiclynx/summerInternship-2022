@@ -2,23 +2,14 @@ package com.summer.internship.tvtracker.ui.login
 
 import android.content.Intent
 import android.os.Bundle
-import android.util.Log
 import android.view.View
 import android.widget.Toast
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
 import com.summer.internship.tvtracker.databinding.ActivityLoginBinding
-import com.summer.internship.tvtracker.domain.Movie
-import com.summer.internship.tvtracker.domain.login.SignInListener
 import com.summer.internship.tvtracker.ui.MainActivity
 import com.summer.internship.tvtracker.ui.register.RegisterActivity
-import io.reactivex.rxjava3.android.schedulers.AndroidSchedulers
-import io.reactivex.rxjava3.core.Observer
-import io.reactivex.rxjava3.core.Scheduler
-import io.reactivex.rxjava3.core.SingleObserver
 import io.reactivex.rxjava3.disposables.CompositeDisposable
-import io.reactivex.rxjava3.disposables.Disposable
-import io.reactivex.rxjava3.schedulers.Schedulers
 
 class LoginActivity : AppCompatActivity() {
     private lateinit var binding: ActivityLoginBinding

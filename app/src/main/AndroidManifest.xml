@@ -14,6 +14,7 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/Theme.SummerInternship2022TvTracker"
+        android:name=".ui.App.TvApplication"
         tools:targetApi="31">
         <activity
             android:name=".ui.detailsScreen.DetailsScreenActivity"

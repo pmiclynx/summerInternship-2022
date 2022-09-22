@@ -3,10 +3,10 @@ package com.summer.internship.tvtracker.ui
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import android.widget.ImageView
-import com.summer.internship.tvtracker.domain.MovieUI
 import com.summer.internship.tvtracker.databinding.ItemMovieBinding
+import com.summer.internship.tvtracker.domain.MovieUI
 
-class MoviesAdapter(
+class MoviesAdapter2(
     private val movies: List<MovieUI>,
     private val imageLoader: ImageLoader,
     private val clickListener: (Long) -> Unit

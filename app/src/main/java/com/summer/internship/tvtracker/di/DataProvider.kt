@@ -1,14 +1,14 @@
 package com.summer.internship.tvtracker.di
 
 import com.summer.internship.tvtracker.data.MoviesLocalDataSource
-import com.summer.internship.tvtracker.data.MoviesRemoteDataSource
+import com.summer.internship.tvtracker.data.MoviesRemoteRetrofitDataSource
 
 object DataProvider {
     @Volatile
     private var localInstance: MoviesLocalDataSource? = null
 
     @Volatile
-    private var remoteInstance: MoviesRemoteDataSource? = null
+    private var remoteInstance: MoviesRemoteRetrofitDataSource? = null
 
     @Synchronized
     fun provideLocalMovieDataSource(): MoviesLocalDataSource {
@@ -16,9 +16,9 @@ object DataProvider {
             synchronized(this) {
                 if (localInstance === null) {
                     localInstance = MoviesLocalDataSource(
-                        RoomModule.provideFavDao(),
-                        RoomModule.provideMovieItemPopularDao(),
-                        RoomModule.provideMovieItemTopRatedDao()
+                        RoomModule11.provideFavDao(),
+                        RoomModule11.provideMovieItemPopularDao(),
+                        RoomModule11.provideMovieItemTopRatedDao()
                     )
                 }
             }
@@ -27,14 +27,14 @@ object DataProvider {
     }
 
     @Synchronized
-    fun provideRemoteMovieDataSource(): MoviesRemoteDataSource {
+    fun provideRemoteMovieDataSource(): MoviesRemoteRetrofitDataSource {
         if (remoteInstance == null) {
             synchronized(this) {
                 if (remoteInstance === null) {
-                    remoteInstance = MoviesRemoteDataSource
+//                    remoteInstance = MoviesRemoteRetrofitDataSource()
                 }
             }
         }
-        return remoteInstance as MoviesRemoteDataSource
+        return remoteInstance as MoviesRemoteRetrofitDataSource
     }
 }
